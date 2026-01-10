@@ -1,0 +1,1 @@
+MOBILENET_MODEL = 'mobilenetv4_conv_small.e2400_r224_in1k'

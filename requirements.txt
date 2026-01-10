@@ -1,0 +1,15 @@
+ultralytics
+supervision
+ipython
+opencv-python
+ipywidgets
+numpy
+tqdm
+torch
+torchvision
+timm
+pillow
+scikit-learn
+matplotlib
+wandb
+lightning
