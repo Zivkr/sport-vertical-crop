@@ -13,3 +13,5 @@ scikit-learn
 matplotlib
 wandb
 lightning
+transformers
+albumentations

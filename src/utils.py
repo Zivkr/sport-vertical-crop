@@ -1,3 +1,6 @@
+import torch
+
+
 def calculate_iou(box1, box2):
     box1_x1, box1_y1, box1_x2, box1_y2 = box1
     box2_x1, box2_y1, box2_x2, box2_y2 = box2
@@ -21,3 +24,17 @@ def calculate_iou_x(box1, box2):
     intersect = max(min(box1_x2, box2_x2) - max(box1_x1, box2_x1), 0)
     union = max(box1_x2, box2_x2) - min(box1_x1, box2_x1)
     return intersect / union
+
+
+def generate_gaussian_target(centers, width, sigma=1.0):
+    # centers: [B], width: int, sigma: float
+    pos = torch.arange(width, device=centers.device).float()
+    # Scale centers from [0,1] to [0, W]
+    centers_scaled = centers.unsqueeze(1) * width
+
+    # Gaussian formula
+    target = torch.exp(-0.5 * ((pos - centers_scaled) / sigma) ** 2)
+
+    # Normalize to sum to 1 (probability distribution)
+    target = target / target.sum(dim=1, keepdim=True)
+    return target

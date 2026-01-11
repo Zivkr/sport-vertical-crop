@@ -1,3 +1,5 @@
+import random
+
 import torch
 from torch.utils.data import Dataset
 import cv2
@@ -5,7 +7,7 @@ import json
 
 
 class FrameDataset(Dataset):
-    def __init__(self, metadata_path, img_dir, transform=None):
+    def __init__(self, metadata_path, img_dir, is_train=True, transform=None):
         with open(metadata_path, 'r') as f:
             original_data = json.load(f)
         self.data = []
@@ -20,6 +22,7 @@ class FrameDataset(Dataset):
             })
         self.img_dir = img_dir
         self.transform = transform
+        self.is_train = is_train
 
     def __len__(self):
         return len(self.data)
@@ -35,10 +38,14 @@ class FrameDataset(Dataset):
 
         # Normalize target to 0-1 range
         img_h, img_w = image.shape[:2]
-        target = torch.tensor([center_x / img_w], dtype=torch.float32)
+        target_normalized = center_x / img_w
 
+        if self.is_train and random.random() > 0.5:
+            image = cv2.flip(image, 1)
+            target_normalized = 1.0 - target_normalized
         if self.transform:
             image = self.transform(image)
+        target = torch.tensor([target_normalized], dtype=torch.float32)
 
         return {
             "image": image,
