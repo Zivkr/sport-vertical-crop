@@ -5,7 +5,7 @@ import numpy as np
 
 
 if __name__ == "__main__":
-    fixed_seed = 1337
+    fixed_seed = 1701
     dataset = FrameDataset("../data/bounding_boxes.json", "../data/frames")
     splits = np.load(f"../data/splits/split_seed{fixed_seed}.npz")
 
@@ -16,7 +16,7 @@ if __name__ == "__main__":
     n_frames_val = len(val_ds)
     all_squared_error = []
     iou = []
-    for idx, frame in enumerate(val_ds):
+    for idx, frame in enumerate(dataset):
         image = frame["image"]
         center_x = frame["target"]
         gt_bbox = frame["bbox"]
@@ -36,6 +36,7 @@ if __name__ == "__main__":
         iou.append(iou_2d)
         all_squared_error.append(squared_error)
     print(f"Mean IOU on Validation set (seed {fixed_seed})", np.mean(iou))
+    print(f"Median IOU on Validation set (seed {fixed_seed})", np.median(iou))
     print(f"MSE on Validation set (seed {fixed_seed})", np.mean(all_squared_error))
 
 
